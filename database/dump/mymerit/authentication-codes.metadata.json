@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"6e4434d17c7647e0ae28ac52b35125b9","collectionName":"authentication-codes","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"0eb501c6c7e84303b9cbb9baa37b18c1","collectionName":"authentication-codes","type":"collection"}

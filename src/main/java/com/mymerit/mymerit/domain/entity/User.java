@@ -44,6 +44,8 @@ public class User {
     private Integer logInStreak = 0;
     private Date lastLoginDate = new Date();
     private Ranking ranking = new Ranking();
+    //
+    private Integer eloRating = 100;
 
     public void checkSolutionAchievementStatus(){
         this.achievements = this.achievementProgress.updateUserSolutionAchievements();
