@@ -18,6 +18,7 @@ public class Lobby {
     public User recipient;
     public User sender;
     public LobbyStatus status;
+    public Task task;
 
 
 }

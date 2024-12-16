@@ -2,6 +2,7 @@ package com.mymerit.mymerit.domain.entity;
 
 import com.mymerit.mymerit.domain.models.EmploymentType;
 import com.mymerit.mymerit.domain.models.Experience1;
+import com.mymerit.mymerit.domain.models.OfferType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -60,7 +61,10 @@ public class JobOffer {
     @NotNull(message = "Employment Type is required")
     private EmploymentType employmentType;
 
-    public JobOffer(String jobTitle, String description, Set<String> requiredSkills, Set<String> preferredSkills, Set<String> workLocations, Set<String> technologies,  User company,  Task task, Experience1 experience, EmploymentType employmentType, Integer salary) {
+    @NotNull(message = "Offer Type is required")
+    private OfferType offerType;
+
+    public JobOffer(String jobTitle, String description, Set<String> requiredSkills, Set<String> preferredSkills, Set<String> workLocations, Set<String> technologies,  User company,  Task task, Experience1 experience, EmploymentType employmentType, Integer salary, OfferType offerType) {
         this.jobTitle = jobTitle;
         this.description = description;
         this.requiredSkills = requiredSkills;
@@ -72,6 +76,7 @@ public class JobOffer {
         this.experience = experience;
         this.employmentType = employmentType;
         this.salary = salary;
+        this.offerType = offerType;
     }
 
     public Task getTask(){

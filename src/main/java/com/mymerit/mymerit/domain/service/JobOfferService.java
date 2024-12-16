@@ -4,6 +4,7 @@ import com.mymerit.mymerit.api.payload.request.JobOfferRequest;
 import com.mymerit.mymerit.api.payload.request.JudgeTokenRequest;
 import com.mymerit.mymerit.api.payload.response.*;
 import com.mymerit.mymerit.domain.entity.*;
+import com.mymerit.mymerit.domain.models.OfferType;
 import com.mymerit.mymerit.domain.models.ProgrammingLanguage;
 import com.mymerit.mymerit.domain.models.TaskStatus;
 import com.mymerit.mymerit.infrastructure.repository.*;
@@ -86,7 +87,8 @@ public class JobOfferService {
                 createdTask,
                 jobOfferRequest.getExperience(),
                 jobOfferRequest.getEmploymentType(),
-                jobOfferRequest.getSalary()
+                jobOfferRequest.getSalary(),
+                OfferType.JOB_OFFER
         );
         JobOffer createdJobOffer = jobOfferRepository.save(jobOffer);
         createdJobOffer.getTask().setJob(createdJobOffer);
@@ -206,10 +208,10 @@ public class JobOfferService {
         PageRequest pageRequest = PageRequest.of(page, 6, sort);
 
         if (languages.isEmpty()) {
-            return jobOfferRepository.findByJobTitleContainingIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetween(q, salaryRange, creditsRange, dateRange, pageRequest)
+            return jobOfferRepository.findByJobTitleContainingIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetweenAndOfferType(q, salaryRange, creditsRange, dateRange, OfferType.JOB_OFFER ,pageRequest)
                     .map(JobOfferService::createJobOfferListResponse);
         } else {
-            return jobOfferRepository.findByJobTitleContainingIgnoreCaseAndTaskAllowedLanguagesInIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetween(q, languages, salaryRange, creditsRange, dateRange, pageRequest)
+            return jobOfferRepository.findByJobTitleContainingIgnoreCaseAndTaskAllowedLanguagesInIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetweenAndOfferType(q, languages, salaryRange, creditsRange, dateRange, OfferType.JOB_OFFER, pageRequest)
                     .map(JobOfferService::createJobOfferListResponse);
         }
     }

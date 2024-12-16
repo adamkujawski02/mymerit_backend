@@ -6,17 +6,23 @@ import com.mymerit.mymerit.domain.service.LobbyService;
 import com.mymerit.mymerit.domain.service.UserDetailsImpl;
 import com.mymerit.mymerit.infrastructure.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Controller
-@RequestMapping("/lobby")
+@RestController
 public class LobbyController {
 
     private final LobbyService lobbyService;
@@ -27,38 +33,21 @@ public class LobbyController {
         this.lobbyService = lobbyService;
         this.lobbyQueue = new ConcurrentLinkedQueue<>();
     }
-
-    // WebSocketowa metoda do dołączenia do kolejki
-    @MessageMapping("/joinQueue")
-    public boolean joinQueue(@CurrentUser UserDetailsImpl user) {
-        User currentUser = lobbyService.extractUser(user).orElseThrow(() -> new IllegalStateException("User not found"));
-
-        if (!lobbyQueue.contains(currentUser)) {
-            lobbyQueue.add(currentUser);
-            return true;
-        }
-        return false;
+    @MessageMapping("/findMatch")
+    @SendTo("/queue/match")
+    public Lobby manageQueue(@Payload Map<String, String> message) {
+        return lobbyService.manageLobbyService(message);
     }
 
-    // WebSocketowa metoda do szukania przeciwnika
-    @MessageMapping("/findOpponent")
-    @SendTo("/queue/match")
-    public Lobby findOpponent(@CurrentUser UserDetailsImpl user) {
-        User currentUser = lobbyService.extractUser(user).orElseThrow(() -> new IllegalStateException("User not found"));
+    @GetMapping("/maintainLobby")
+    public ResponseEntity<Lobby> isInLobby(@RequestParam String id){
+        System.out.printf("\n\n\n\n");
+        System.out.println(id);
+        System.out.printf("\n\n\n\n");
 
-        if (!lobbyQueue.contains(currentUser)) {
-            throw new IllegalStateException("User not in queue.");
+        if(lobbyService.maintainLobby(id).isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-
-        User opponent = lobbyQueue.stream().filter(u -> !u.equals(currentUser)).findFirst().orElse(null);
-
-        if (opponent != null) {
-            lobbyQueue.remove(currentUser);
-            lobbyQueue.remove(opponent);
-
-            return lobbyService.createLobby(currentUser, opponent);
-        } else {
-            return null; // Możesz dodać bardziej odpowiedni komunikat
-        }
+        return ResponseEntity.ok(lobbyService.maintainLobby(id).get());
     }
 }

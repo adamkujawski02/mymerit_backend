@@ -3,6 +3,7 @@ package com.mymerit.mymerit.infrastructure.repository;
 
 import com.mymerit.mymerit.domain.entity.JobOffer;
 
+import com.mymerit.mymerit.domain.models.OfferType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
@@ -20,22 +21,25 @@ import java.util.Set;
 @Repository
 public interface JobOfferRepository extends MongoRepository<JobOffer, String> {
 
-    Optional<JobOffer> findById(String id);
+    Optional<JobOffer> findByIdAndOfferType(String id, OfferType offerTypr);
 
-    Page<JobOffer> findByJobTitleContainingIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetween(
+    Page<JobOffer> findByJobTitleContainingIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetweenAndOfferType(
             String jobTitle,
             Range<Integer> salaryRange,
             Range<Integer> creditsRange,
             Range<Date> dateRange,
+            OfferType offerType,
             Pageable pageable
     );
 
-    Page<JobOffer> findByJobTitleContainingIgnoreCaseAndTaskAllowedLanguagesInIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetween(
+    JobOffer findByOfferType(OfferType offerType);
+    Page<JobOffer> findByJobTitleContainingIgnoreCaseAndTaskAllowedLanguagesInIgnoreCaseAndSalaryBetweenAndTaskRewardBetweenAndTaskClosesAtBetweenAndOfferType(
             String jobTitle,
             Set<String> languages,
             Range<Integer> salaryRange,
             Range<Integer> creditsRange,
             Range<Date> dateRange,
+            OfferType offerType,
             Pageable pageable
     );
 
